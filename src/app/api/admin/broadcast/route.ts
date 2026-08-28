@@ -3,9 +3,18 @@ import { prisma } from '@/lib/db';
 import { verifyAdminSession } from '@/lib/auth';
 import { Bot } from 'grammy';
 
-const bot = new Bot(process.env.TELEGRAM_BOT_TOKEN || '');
+
 
 export async function POST(req: NextRequest) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  if (!token) {
+    return NextResponse.json(
+      { error: 'TELEGRAM_BOT_TOKEN sozlanmagan' },
+      { status: 500 }
+    );
+  }
+
+  const bot = new Bot(token);
   const session = await verifyAdminSession();
   if (!session) return NextResponse.json({ error: 'Ruxsat yo‘q' }, { status: 401 });
 
