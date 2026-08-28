@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
   let successCount = 0;
   for (const u of uniqueUsers) {
     try {
-      await bot.api.sendMessage(u.telegramId, message);
+      await bot!.api.sendMessage(u.telegramId, message);
       successCount++;
     } catch {}
   }
