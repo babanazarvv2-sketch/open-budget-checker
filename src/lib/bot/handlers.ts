@@ -89,7 +89,8 @@ export function setupBotHandlers(bot: Bot) {
   });
 
   bot.on(':text', async (ctx) => {
-    const text = ctx.message.text.trim();
+    const text = ctx.message?.text?.trim();
+    if (!text) return;
     if (text.startsWith('/')) return;
 
     const telegramId = ctx.from?.id.toString();
@@ -152,6 +153,7 @@ export function setupBotHandlers(bot: Bot) {
     if (!submission) return ctx.reply('Yangi ariza uchun /start bosing.');
 
     const photos = ctx.message?.photo;
+    if (!photos || photos.length === 0) return;
     const bestPhoto = photos[photos.length - 1];
     const file = await ctx.api.getFile(bestPhoto.file_id);
 
