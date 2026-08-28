@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String       @id @default(cuid())
+  telegramId  String       @unique
+  username    String?
+  phone       String?
+  isBlocked   Boolean      @default(false)
+  submissions Submission[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Submission {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  voteCode          String?  // Ovoz SMS kodi
+  adminNote         String?  // Admin izohi
+  rewardPaid        Boolean  @default(false) // Mukofot to'langanligi
+  status            String   // PHONE_RECEIVED, CODE_RECEIVED, SCREENSHOT_CODE_RECEIVED, SCREENSHOT_CONFIRM_RECEIVED, APPROVED, REJECTED
+  screenshotCode    String?  // 1-screenshot (Kod kiritilgan holat)
+  screenshotConfirm String?  // 2-screenshot (Tasdiqlash holati)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
